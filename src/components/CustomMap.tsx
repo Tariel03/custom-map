@@ -21,6 +21,7 @@ export default function CustomMap({coordinates, onMapClick, mapType}: MapProps){
     return(
         <div className="relative">
             <MapContainer center={[lat, lon]} zoom={5} style={{height: '30rem', width: '100%'}}>
+                <MapCenter coordinates={coordinates}/>
                 <MapClick onMapClick={onMapClick}/>
                 <MapTileLayer/>
                 <TileLayer
@@ -32,6 +33,18 @@ export default function CustomMap({coordinates, onMapClick, mapType}: MapProps){
             <MapLegend mapType={mapType}/>
         </div>
     )
+}
+
+function MapCenter({coordinates}: {coordinates: CoordinatesProps}) {
+    const map = useMap()
+
+    useEffect(() => {
+        map.setView([coordinates.lat, coordinates.lon], map.getZoom(), {
+            animate: true,
+        })
+    }, [map, coordinates.lat, coordinates.lon])
+
+    return null
 }
 
 function MapClick({onMapClick}:{onMapClick: (lat: number, lon: number) => void}) {
