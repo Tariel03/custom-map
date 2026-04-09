@@ -2,11 +2,12 @@ import {MapContainer, Marker, TileLayer, useMap} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import type {CoordinatesProps} from "../types.ts";
 import {useEffect} from "react";
-import {MaptilerLayer} from "@maptiler/leaflet-maptilersdk";
+import {MapStyle, MaptilerLayer} from "@maptiler/leaflet-maptilersdk";
 import MapLegend from "@/components/MapLegend.tsx";
 import {MAP_LAYER_STYLES} from "@/components/MapLayerStyles.ts";
 
 const API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY
+const MAPTILER_API_KEY = import.meta.env.VITE_MAPTILER_API_KEY
 
 type MapProps = {
     coordinates: CoordinatesProps,
@@ -19,7 +20,7 @@ export default function CustomMap({coordinates, onMapClick, mapType}: MapProps){
 
     return(
         <div className="relative">
-            <MapContainer center={[lat, lon]}  key={`${lat}-${lon}`} zoom={5} style={{height: '30rem', width: '100%'}}>
+            <MapContainer center={[lat, lon]} zoom={5} style={{height: '30rem', width: '100%'}}>
                 <MapClick onMapClick={onMapClick}/>
                 <MapTileLayer/>
                 <TileLayer
@@ -57,7 +58,7 @@ function MapTileLayer() {
     const map = useMap()
 
     useEffect(() => {
-        const tileLayer = new MaptilerLayer({style: "basic-dark", apiKey : "m95DfaEILeAMMdYJmVNG"})
+        const tileLayer = new MaptilerLayer({style: MapStyle.BASIC.DARK, apiKey : MAPTILER_API_KEY})
         tileLayer.addTo(map)
 
         return () => {map.removeLayer(tileLayer)}

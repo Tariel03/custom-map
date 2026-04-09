@@ -1,6 +1,6 @@
 import Cards from "./Cards.tsx";
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {getAPIResponse} from "../../api.ts";
+import {getAPIResponse} from "@/api.ts";
 
 import Sunrise from "/src/assets/sunrise.svg?react"
 import Sunset from '/src/assets/sunset.svg?react'
@@ -9,7 +9,7 @@ import UV from '/src/assets/uv.svg?react'
 import Wind from '/src/assets/wind.svg?react'
 import Pressure from '/src/assets/pressure.svg?react'
 import ArrowUp from '/src/assets/arrow-up.svg?react'
-import type {CoordinatesProps} from "../../types.ts";
+import type {CoordinatesProps} from "@/types.ts";
 
 
 export default function AdditionalInfo({coordinates}: {coordinates: CoordinatesProps}){
