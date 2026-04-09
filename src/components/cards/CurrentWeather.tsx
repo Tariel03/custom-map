@@ -1,8 +1,8 @@
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {getAPIResponse} from "../../api.ts";
+import {getAPIResponse} from "@/api.ts";
 import Cards from "./Cards.tsx";
 import WeatherIcon from "../WeatherIcon.tsx";
-import type {CoordinatesProps} from "../../types.ts";
+import type {CoordinatesProps} from "@/types.ts";
 export default function CurrentWeather({coordinates}: {coordinates: CoordinatesProps}) {
     const {data} = useSuspenseQuery({
         queryKey: [coordinates, 'weather'],
@@ -33,8 +33,8 @@ export default function CurrentWeather({coordinates}: {coordinates: CoordinatesP
                 </div>
 
                 <div className='flex flex-col gap-2 items-center '>
-                    <p className='text-gray-500'>Humidity: </p>
-                    <p>{Math.round(data.current.humidity)}%</p>
+                    <p>Humidity: </p>
+                    <p className='text-gray-500'>{Math.round(data.current.humidity)}%</p>
                 </div>
 
                 <div className='flex flex-col gap-2 items-center '>

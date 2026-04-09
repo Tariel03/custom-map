@@ -5,20 +5,47 @@ import AdditionalInfo from "./components/cards/AdditionalInfo.tsx";
 import CustomMap from "./components/CustomMap.tsx";
 import {useState} from "react";
 import type {CoordinatesProps} from "./types.ts";
+import LocationDropdown from "@/components/dropdowns/LocationDropdown.tsx";
+import {useQuery} from "@tanstack/react-query";
+import {getGeoCode} from "@/api.ts";
+import MapTypeDropdown from "@/components/dropdowns/MapTypeDropdown.tsx";
 
 function App() {
     const [coordinates, setCoordinates] = useState<CoordinatesProps>({lat:33.44, lon:-94.04})
     const onMapClick = (lat: number, lon: number) => {
         setCoordinates({lat, lon})
+        setLocation('custom')
     }
+
+    const [location, setLocation] = useState<string>('Toronto');
+    const[mapType, setMapType] = useState<string>('clouds_new');
+    const {data} = useQuery({
+        queryKey: ['geoCode', location],
+        queryFn: () => getGeoCode({city : location})
+        ,
+        enabled: location !== 'custom'
+    })
+
+    const coords = location === 'custom'
+        ? coordinates
+        : {lat : data?.lat ?? coordinates.lat, lon: data?.lon ?? coordinates.lon}
   return (
       <div className="flex flex-col gap-8">
-          <CustomMap coordinates={coordinates} onMapClick={onMapClick}/>
-          <CurrentWeather coordinates={coordinates} />
-          <DailyForecast coordinates={coordinates} />
-          <HourlyForecast coordinates={coordinates} />
-          <AdditionalInfo coordinates={coordinates} />
-
+          <div className='flex gap-8'>
+              <div className='flex gap-4 items-center'>
+                  <h3 className='text-xl font-semibold'>Location:</h3>
+                  <LocationDropdown location = {location} setLocation = {setLocation}/>
+              </div>
+              <div className='flex gap-4 items-center'>
+                  <h3 className='text-xl font-semibold'>Map Type:</h3>
+                  <MapTypeDropdown mapType={mapType} setMapType={setMapType} />
+              </div>
+          </div>
+          <CustomMap coordinates={coords} mapType={mapType} onMapClick={onMapClick}/>
+          <CurrentWeather coordinates={coords} />
+          <DailyForecast coordinates={coords} />
+          <HourlyForecast coordinates={coords} />
+          <AdditionalInfo coordinates={coords} />
       </div>
 
   )
