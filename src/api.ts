@@ -1,5 +1,6 @@
 import {OpenWeatherSchema} from "./schemas/weatherSchema.ts";
 import {GeocodingResponseSchema} from "@/schemas/geocodeSchema.ts";
+import {AirPollutionSchema} from "@/schemas/airPollutionSchema.ts";
 
 type APIInput = { lat: number, lon: number }
 type CityInput = {city: string}
@@ -18,4 +19,10 @@ export async function getGeoCode({city}: CityInput) {
     const validatedData = GeocodingResponseSchema.parse(json);
     // 2. Return the first object (or null if not found)
     return validatedData[0] || null;
+}
+
+export async function getAirPollutionData({lat, lon} : APIInput) {
+    const result = await fetch(`http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`)
+    const data = await result.json()
+    return AirPollutionSchema.parse(data)
 }

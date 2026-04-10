@@ -3,13 +3,14 @@ import {clsx} from "clsx";
 
 type CardProps = {
     children: React.ReactNode
-    title: string,
+    title?: string,
+    className?: string
     childrenClassName?: string
 }
-export default function Cards({children, title, childrenClassName}: CardProps) {
+export default function Cards({children, title, className, childrenClassName}: CardProps) {
 
     return(
-        <div className="p-4 bg-linear-to-br from-card to-card/60  shadow-md flex flex-col gap-4">
+        <div className={clsx(className, "p-4 bg-linear-to-br from-card to-card/60  shadow-md flex flex-col  gap-4")}>
             <h2 className="text-2xl font-semibold">{title}</h2>
             <div className={clsx(childrenClassName, 'animate-[fade-in_1.6s_ease-out_forwards]')}>{children}</div>
         </div>

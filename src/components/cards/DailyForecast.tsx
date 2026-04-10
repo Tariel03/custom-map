@@ -1,8 +1,8 @@
 import {useSuspenseQuery} from "@tanstack/react-query";
-import {getAPIResponse} from "../../api.ts";
+import {getAPIResponse} from "@/api.ts";
 import Cards from "./Cards.tsx";
 import WeatherIcon from "../WeatherIcon.tsx";
-import type {CoordinatesProps} from "../../types.ts";
+import type {CoordinatesProps} from "@/types.ts";
 
 export default function DailyForecast({coordinates}: {coordinates: CoordinatesProps}) {
     const {data} = useSuspenseQuery({

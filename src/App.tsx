@@ -13,6 +13,9 @@ import CurrentSkeleton from "@/components/skeletons/CurrentSkeleton.tsx";
 import HourlySkeleton from "@/components/skeletons/HourlySkeleton.tsx";
 import AdditionalInfoSkeleton from "@/components/skeletons/AdditionalInfoSkeleton.tsx";
 import DailySkeleton from "@/components/skeletons/DailySkeleton.tsx";
+import SidePanel from "@/components/SidePanel.tsx";
+import Hamburger from "/src/assets/hamburger.svg?react"
+
 
 function App() {
     const [coordinates, setCoordinates] = useState<CoordinatesProps>({lat:33.44, lon:-94.04})
@@ -23,6 +26,7 @@ function App() {
 
     const [location, setLocation] = useState<string>('Toronto');
     const[mapType, setMapType] = useState<string>('clouds_new');
+    const[isSidePanelOpen, setIsSidePanelOpen] = useState<boolean>(true);
     const {data} = useQuery({
         queryKey: ['geoCode', location],
         queryFn: () => getGeoCode({city : location})
@@ -34,28 +38,37 @@ function App() {
         ? coordinates
         : {lat : data?.lat ?? coordinates.lat, lon: data?.lon ?? coordinates.lon}
   return (
-      <div className="flex flex-col gap-8">
-          <div className='flex gap-8'>
-              <div className='flex gap-4 items-center'>
-                  <h3 className='text-xl font-semibold'>Location:</h3>
-                  <LocationDropdown location = {location} setLocation = {setLocation}/>
+      <>
+          <div className="flex flex-col gap-8">
+              <div className='flex gap-8'>
+                  <div className='flex gap-4 items-center'>
+                      <h3 className='text-xl font-semibold'>Location:</h3>
+                      <LocationDropdown location = {location} setLocation = {setLocation}/>
+                  </div>
+                  <div className='flex gap-4 items-center'>
+                      <h3 className='text-xl font-semibold'>Map Type:</h3>
+                      <MapTypeDropdown mapType={mapType} setMapType={setMapType} />
+                  </div>
+                  <button onClick={() => setIsSidePanelOpen(!isSidePanelOpen)} className='size-8 invert ml-auto'>
+                      <Hamburger className="size-full"/>
+                  </button>
               </div>
-              <div className='flex gap-4 items-center'>
-                  <h3 className='text-xl font-semibold'>Map Type:</h3>
-                  <MapTypeDropdown mapType={mapType} setMapType={setMapType} />
-              </div>
+              <CustomMap coordinates={coords} mapType={mapType} onMapClick={onMapClick}/>
+              <Suspense fallback={<CurrentSkeleton />}>
+                  <CurrentWeather coordinates={coords} />
+              </Suspense>
+              <Suspense fallback={<DailySkeleton />}>
+                  <DailyForecast coordinates={coords} />
+              </Suspense>
+              <Suspense fallback={<HourlySkeleton />}>
+                  <HourlyForecast coordinates={coords} />
+              </Suspense>
+              <Suspense fallback={<AdditionalInfoSkeleton />}>
+                  <AdditionalInfo coordinates={coords} />
+              </Suspense>
           </div>
-          <CustomMap coordinates={coords} mapType={mapType} onMapClick={onMapClick}/>
-          <Suspense fallback={<CurrentSkeleton />}>
-              <CurrentWeather coordinates={coords} />
-          </Suspense>
-          <Suspense fallback={<DailySkeleton/>}>
-              <DailyForecast coordinates={coords} />
-          </Suspense>
-          <Suspense fallback={<HourlySkeleton />}><HourlyForecast coordinates={coords} /> </Suspense>
-          <Suspense fallback={<AdditionalInfoSkeleton />}><AdditionalInfo coordinates={coords} /> </Suspense>
-      </div>
-
+          <SidePanel coordinates={coords} isOpen = {isSidePanelOpen} setOpen = {setIsSidePanelOpen} />
+      </>
   )
 }
 
